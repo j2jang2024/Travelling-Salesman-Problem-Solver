@@ -2,13 +2,20 @@ from math import sqrt
 import random
 
 def readTSP(filename):
+    # "burma14.tsp"
     f = open(filename,"r")
     myList = []
+    start = False
     for line in f:
         lineSplitted = line.split()
-        if len(lineSplitted) != 3:
+        if "NODE_COORD_SECTION" in lineSplitted:
+            start = True
             continue
-        myList.append((float(lineSplitted[1]), float(lineSplitted[2])))
+        if start:
+            if "EOF" in lineSplitted:
+                break
+            myList.append((float(lineSplitted[1]),float(lineSplitted[2])))
+
     return myList
 
 def pythagoras(p1, p2):
@@ -46,30 +53,30 @@ def randomSeed(points):
 def twoPointSwap(order):
     old_dist = getTotalDistance(order)
     a = random.choice(range(len(order)))
-    b = random.choice(range(len(order)))
-    while a == b:
-        b = random.choice(range(len(order)))
-
+    b = random.choice(range(-5, 5))
+    while b == 0:
+        b = random.choice(range(-5, 5))
+    b += a
+    if b >= len(order):
+        b -= len(order)
     a_temp = order[a]
     order[a] = order[b]
     order[b] = a_temp
 
     return order
 
-init = readTSP('burma14.tsp')
-temp = randomSeed(init)
+init = readTSP('rl11849.tsp')
+temp = greedySeed(init)
 org_dist = getTotalDistance(temp)
 print("Initial Distance: " + str(org_dist))
 
-for i in range(30):
+for i in range(10000):
     new_order = twoPointSwap(temp)
     new_dist = getTotalDistance(new_order)
     if new_dist<org_dist:
-        print(f"Success! {new_dist}")
+        print("Success! " + str(new_dist))
         temp = new_order
         org_dist=new_dist
-    else:
-        print("Failure")
     
     
 
