@@ -54,21 +54,24 @@ def twoPointSwap(order):
     order[a] = order[b]
     order[b] = a_temp
 
-    new_dist = getTotalDistance(order)
-    if new_dist < old_dist:
-        return order, new_dist
-    return False, new_dist
+    return order
 
 init = readTSP('burma14.tsp')
-init = randomSeed(init)
-print("Initial Distance: " + str(getTotalDistance(init)))
+temp = randomSeed(init)
+org_dist = getTotalDistance(temp)
+print("Initial Distance: " + str(org_dist))
+
 for i in range(30):
-    a, b = twoPointSwap(init)
-    if a == False:
-        print("Failure " + str(b)) 
+    new_order = twoPointSwap(temp)
+    new_dist = getTotalDistance(new_order)
+    if new_dist<org_dist:
+        print(f"Success! {new_dist}")
+        temp = new_order
+        org_dist=new_dist
     else:
-        print("Success! " + str(b))
-        init = a
+        print("Failure")
+    
+    
 
 #print(greedySeed(readTSP("burma14.tsp")))
 #print(randomSeed(readTSP("burma14.tsp")))
